@@ -34,6 +34,7 @@ class Lightbox {
 		this.sources = this.getGalleryItems();
 		this.createCarousel();
 		this.createModal();
+		this.addEvents();
 	}
 	show() {
 		document.body.appendChild(this.modalElement);
@@ -148,7 +149,7 @@ class Lightbox {
 				return `
 				<div class="carousel-item ${!i ? 'active' : ''}" style="min-height: 100px">
 					${spinner}
-					<div class="ratio ratio-16x9" style="background-color: #000;">${inner}</div>
+					<div class="ratio ratio-16x9" style="background-color: #f4e029;">${inner}</div>
 					${caption}
 				</div>`;
 			})
@@ -215,13 +216,17 @@ class Lightbox {
 	createModal() {
 		const template = document.createElement('template');
 		const btnInner =
-			'<svg xmlns="http://www.w3.org/2000/svg" style="position: relative; top: -5px;" viewBox="0 0 16 16" fill="#fff"><path d="M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z"/></svg>';
+			'<svg xmlns="http://www.w3.org/2000/svg" style="position: relative; top: -5px;" viewBox="0 0 16 16" fill="#3a64a6"><path d="M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z"/></svg>';
 		const html = `
 			<div class="modal lightbox fade" id="lightboxModal-${this.hash}" tabindex="-1" aria-hidden="true">
 				<div class="modal-dialog modal-dialog-centered modal-${this.settings.size}">
 					<div class="modal-content border-0 bg-transparent">
 						<div class="modal-body p-0">
 							<button type="button" class="btn-close position-absolute top-0 end-0 p-3" data-bs-dismiss="modal" aria-label="Close" style="z-index: 2; background: none;">${btnInner}</button>
+						</div>
+						<div class="user-area" style="background:#f4e029; padding-left:20px; padding-bottom:10px; position:relative; top:-10px; ">
+							<i class="bi ${this.el.firstElementChild.dataset.heart} grim-heart" data-heart-id="${this.el.firstElementChild.dataset.id}"></i>
+  	          <span class="love" data-storie-id="${this.el.firstElementChild.dataset.id}">J\'aime <span class="love-count" data-count="${this.el.firstElementChild.dataset.count}">${this.el.firstElementChild.dataset.count}</span></span>
 						</div>
 					</div>
 				</div>
@@ -233,6 +238,10 @@ class Lightbox {
 		this.modalElement.querySelector('[data-bs-dismiss]').addEventListener('click', () => this.modal.hide());
 		this.modal = new bootstrap.Modal(this.modalElement, this.modalOptions);
 		return this.modal;
+	}
+	addEvents() {
+		this.modalElement.querySelector('.grim-heart').addEventListener('click', this.settings.grimbook.setGrimHeart.bind(this.settings.grimbook));
+		//this.modalElement.querySelector('.love').addEventListener('click', this.settings.grimbook.showGrimHearts.bind(this.settings.grimbook));
 	}
 	randomHash(length = 8) {
 		return Array.from({ length }, () => Math.floor(Math.random() * 36).toString(36)).join('');
